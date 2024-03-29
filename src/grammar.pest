@@ -1,0 +1,64 @@
+NODE_TAG = _{ "---" }
+
+TAG_OPEN  = _{ "{" }
+TAG_CLOSE = _{ "}" }
+
+// ts
+
+TS_STRING_QUOTE        = _{ "\"" }
+TS_STRING_QUOTE_ESCAPE = _{ "\\\"" }
+
+TS_TEMPLATE_QUOTE            = _{ "`" }
+TS_TEMPLATE_QUOTE_ESCAPE     = _{ "\\`" }
+TS_TEMPLATE_EXPRESSION_OPEN  = _{ "${" }
+TS_TEMPLATE_EXPRESSION_CLOSE = _{ "}" }
+
+TS_SPECIAL_SYMBOL = { TAG_OPEN | TAG_CLOSE | NODE_TAG }
+
+TS_CODE_CHAR = _{ !TS_SPECIAL_SYMBOL ~ !TS_STRING_QUOTE ~ !TS_TEMPLATE_QUOTE ~ ANY }
+
+TS_STRING_CHAR   = _{ !TS_STRING_QUOTE ~ ANY }
+TS_TEMPLATE_CHAR = _{ !TS_TEMPLATE_QUOTE ~ !TS_TEMPLATE_EXPRESSION_OPEN ~ ANY }
+
+ts_string = _{ TS_STRING_QUOTE ~ TS_STRING_CHAR* ~ TS_STRING_QUOTE }
+
+ts_template_expression = _{ TS_TEMPLATE_EXPRESSION_OPEN ~ ts_code ~ TS_TEMPLATE_EXPRESSION_CLOSE }
+ts_template_simple     = _{ (ts_template_expression | TS_TEMPLATE_CHAR)* }
+ts_template            = _{ TS_TEMPLATE_QUOTE ~ ts_template_simple ~ TS_TEMPLATE_QUOTE }
+
+ts_simple_code = _{ ts_string | ts_template | TS_CODE_CHAR+ }
+
+ts_code = @{ (ts_simple_code | (TAG_OPEN ~ ts_code? ~ TAG_CLOSE))+ }
+
+ts_start_char        = _{ ASCII_ALPHA | "_" | "$" }
+ts_continuation_char = _{ ASCII_ALPHANUMERIC | "_" | "$" }
+
+ts_identifier = @{ ts_start_char ~ ts_continuation_char* }
+
+// dia
+
+CHOICE_TAG = _{"-"}
+
+SPECIAL_SYMBOL = _{ NODE_TAG | CHOICE_TAG }
+TEXT_CHAR      = _{ !SPECIAL_SYMBOL ~ ANY }
+
+expression = { TAG_OPEN ~ ts_code ~ TAG_CLOSE }
+
+node_name = { NODE_TAG ~ ts_identifier ~ NODE_TAG }
+
+
+text = { TEXT_CHAR+ }
+
+
+choice = { CHOICE_TAG ~ text }
+
+choices = {choice*}
+
+
+node = { node_name ~ text? ~ choices }
+
+module = { SOI ~ ts_code? ~ node+ ~ EOI }
+
+// config
+SPACE      = _{ " " | "\t" }
+WHITESPACE = _{ SPACE | NEWLINE }
