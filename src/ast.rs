@@ -11,6 +11,10 @@ impl TsModule {
             code: code.to_string(),
         }
     }
+
+    pub fn code(&self) -> &str {
+        &self.code
+    }
 }
 
 pub struct TsExpression {
@@ -22,6 +26,10 @@ impl TsExpression {
             code: code.to_string(),
         }
     }
+
+    pub fn code(&self) -> &str {
+        &self.code
+    }
 }
 
 pub enum TextChunk {
@@ -29,7 +37,7 @@ pub enum TextChunk {
     Expression(TsExpression),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Text {
     chunks: Vec<String>,
 }
@@ -38,11 +46,9 @@ impl Text {
     pub fn new(chunks: Vec<String>) -> Self {
         Self { chunks }
     }
-}
 
-impl Default for Text {
-    fn default() -> Self {
-        Self { chunks: vec![] }
+    pub fn chunks(&self) -> &[String] {
+        &self.chunks
     }
 }
 
@@ -52,18 +58,17 @@ pub struct Choice {
     then: Option<NodeName>,
 }
 
-impl Default for Choice {
-    fn default() -> Self {
-        Self {
-            text: Text::default(),
-            then: None,
-        }
-    }
-}
-
 impl Choice {
     pub fn new(text: Text, then: Option<NodeName>) -> Self {
         Self { text, then }
+    }
+
+    pub fn then(&self) -> Option<&NodeName> {
+        self.then.as_ref()
+    }
+
+    pub fn text(&self) -> &Text {
+        &self.text
     }
 }
 
@@ -77,6 +82,14 @@ impl SubNode {
     pub fn new(text: Text, choices: Vec<Choice>) -> Self {
         Self { text, choices }
     }
+
+    pub fn text(&self) -> &Text {
+        &self.text
+    }
+
+    pub fn choices(&self) -> &[Choice] {
+        &self.choices
+    }
 }
 
 #[derive(Debug)]
@@ -88,6 +101,10 @@ impl Node {
     pub fn new(sub_nodes: Vec<SubNode>) -> Self {
         Self { sub_nodes }
     }
+
+    pub fn sub_nodes(&self) -> &[SubNode] {
+        &self.sub_nodes
+    }
 }
 
 #[derive(Debug, PartialEq, Eq, Hash)]
@@ -96,6 +113,10 @@ pub struct NodeName(String);
 impl NodeName {
     pub fn new(name: &str) -> Self {
         Self(name.to_string())
+    }
+
+    pub fn as_str(&self) -> &str {
+        &self.0
     }
 }
 
@@ -114,5 +135,13 @@ impl Module {
         }
 
         Self { code, nodes }
+    }
+
+    pub fn code(&self) -> &TsModule {
+        &self.code
+    }
+
+    pub fn nodes(&self) -> &[(NodeName, Node)] {
+        &self.nodes
     }
 }
