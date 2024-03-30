@@ -1,4 +1,4 @@
-use dia_core::parser::parse;
+use dia_core::{parser::parse, traits::Codegen};
 
 fn main() {
     let input = include_str!("../resources/t1.dia");
@@ -6,4 +6,6 @@ fn main() {
     let module = parse(input);
 
     println!("{:?}", module);
+
+    println!("{}", module.generate());
 }
