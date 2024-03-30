@@ -1,7 +1,12 @@
+ESCAPE = _{ "\\" }
+
 NODE_TAG = _{ "---" }
 
 TAG_OPEN  = _{ "{" }
 TAG_CLOSE = _{ "}" }
+
+INLINE_NODE_OPEN  = _{ "[" }
+INLINE_NODE_CLOSE = _{ "]" }
 
 // ts
 
@@ -37,25 +42,43 @@ ts_identifier = @{ ts_start_char ~ ts_continuation_char* }
 
 // dia
 
-CHOICE_TAG = _{"-"}
+CHOICE_TAG  = _{ "-" }
+THEN_TAG    = _{ "=>" }
+COMPOSE_TAG = _{ "$" }
 
-SPECIAL_SYMBOL = _{ NODE_TAG | CHOICE_TAG }
-TEXT_CHAR      = _{ !SPECIAL_SYMBOL ~ ANY }
+SPECIAL_SYMBOL     = _{ THEN_TAG | ESCAPE | TAG_OPEN | TAG_CLOSE | INLINE_NODE_OPEN | INLINE_NODE_CLOSE }
+LINE_START_SPECIAL = _{ NODE_TAG | CHOICE_TAG | COMPOSE_TAG }
+LINE_CHAR          = @{
+    !NEWLINE ~ ((ESCAPE ~ SPECIAL_SYMBOL) | (!SPECIAL_SYMBOL ~ ANY))
+}
+
+node_name = { ts_identifier }
 
 expression = { TAG_OPEN ~ ts_code ~ TAG_CLOSE }
 
-node_name = { NODE_TAG ~ ts_identifier ~ NODE_TAG }
+node_header = { NODE_TAG ~ node_name ~ NODE_TAG }
 
+line_piece = @{ LINE_CHAR+ }
 
-text = { TEXT_CHAR+ }
+line = ${ !LINE_START_SPECIAL ~ (expression | line_piece)+ }
 
+text = { line+ }
 
-choice = { CHOICE_TAG ~ text }
+inline_node = { INLINE_NODE_OPEN ~ node_body ~ INLINE_NODE_CLOSE }
 
-choices = {choice*}
+then = { THEN_TAG ~ (node_name | inline_node) }
 
+choice = { CHOICE_TAG ~ text ~ then? }
 
-node = { node_name ~ text? ~ choices }
+choices = { choice+ }
+
+sub_node = { text? ~ choices? }
+
+sub_nodes = { sub_node ~ (COMPOSE_TAG ~ sub_node)* }
+
+node_body = { sub_nodes ~ then? }
+
+node = { node_header ~ node_body }
 
 module = { SOI ~ ts_code? ~ node+ ~ EOI }
 

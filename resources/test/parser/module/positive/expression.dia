@@ -1,0 +1,5 @@
+import { a } from "./temp.ts"
+
+--- node1 ---
+Just some {fun} text.
+A magic of how fun this is.
