@@ -112,7 +112,7 @@ pub struct NodeName(String);
 
 impl NodeName {
     pub fn new(name: &str) -> Self {
-        Self(name.to_string())
+        Self(format!("${name}"))
     }
 
     pub fn as_str(&self) -> &str {

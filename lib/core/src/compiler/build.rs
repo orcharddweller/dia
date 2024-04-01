@@ -31,7 +31,7 @@ impl Compile<Box<swc_ecma_ast::Expr>> for Choice {
         if let Some(then) = self.then() {
             items.push(swc_ecma_ast::KeyValueProp {
                 key: var_name("then"),
-                value: expr_arrow_cb(Box::new(swc_ecma_ast::Expr::Ident(ident(then.as_str())))),
+                value: Box::new(swc_ecma_ast::Expr::Ident(ident(then.as_str()))),
             });
         }
 
