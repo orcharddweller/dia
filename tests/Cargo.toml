@@ -1,5 +1,5 @@
 [package]
-name = "dia-tests"
+name = "dia_tests"
 version = "0.0.0"
 license.workspace = true
 edition.workspace = true

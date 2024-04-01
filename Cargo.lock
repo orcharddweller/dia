@@ -230,12 +230,12 @@ name = "dia"
 version = "0.1.0"
 dependencies = [
  "clap",
- "dia-core",
+ "dia_core",
  "glob",
 ]
 
 [[package]]
-name = "dia-core"
+name = "dia_core"
 version = "0.1.0"
 dependencies = [
  "pest",
@@ -249,7 +249,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "dia-tests"
+name = "dia_tests"
 version = "0.0.0"
 dependencies = [
  "tempfile",
