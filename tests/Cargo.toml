@@ -1,0 +1,16 @@
+[package]
+name = "dia-tests"
+version = "0.0.0"
+license.workspace = true
+edition.workspace = true
+repository.workspace = true
+
+[lib]
+path = "lib.rs"
+
+[[test]]
+name = "integration_tests"
+path = "integration/mod.rs"
+
+[dev-dependencies]
+tempfile = "3.10.1"
