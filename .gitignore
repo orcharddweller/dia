@@ -1,2 +1,8 @@
+# Rust
 /target/
+
+# Dev
 /sandbox/
+
+# macOS
+.DS_Store
