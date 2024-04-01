@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "dev": "dia dev && deno run --allow-read='.' .dia/dev/src/main.ts",
+    "build": "dia build"
+  },
+  "imports": {
+    "dia": "https://raw.githubusercontent.com/orcharddweller/dia/main/builtins/mod.ts"
+  }
+}
