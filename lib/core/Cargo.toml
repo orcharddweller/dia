@@ -1,9 +1,11 @@
 [package]
 name = "dia_core"
 version = "0.1.0"
+description = "core elements of dia"
 edition.workspace = true
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license.workspace = true
+homepage.workspace = true
+repository.workspace = true
 
 [dependencies]
 thiserror = "1.0.58"
