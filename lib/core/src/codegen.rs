@@ -1,5 +1,3 @@
-use swc_ecma_ast::Str;
-
 use crate::{
     ast::{Choice, Module, Node, NodeName, SubNode, Text, TsExpression, TsModule},
     traits::Codegen,
@@ -7,13 +5,13 @@ use crate::{
 
 impl Codegen for TsModule {
     fn generate(&self) -> String {
-        self.code().into()
+        self.raw().into()
     }
 }
 
 impl Codegen for TsExpression {
     fn generate(&self) -> String {
-        self.code().into()
+        self.raw().into()
     }
 }
 

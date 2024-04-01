@@ -2,33 +2,33 @@ use crate::utils::has_duplicates;
 
 #[derive(Debug)]
 pub struct TsModule {
-    code: String,
+    raw: String,
 }
 
 impl TsModule {
-    pub fn new(code: &str) -> Self {
+    pub fn new(raw: &str) -> Self {
         Self {
-            code: code.to_string(),
+            raw: raw.to_string(),
         }
     }
 
-    pub fn code(&self) -> &str {
-        &self.code
+    pub fn raw(&self) -> &str {
+        &self.raw
     }
 }
 
 pub struct TsExpression {
-    code: String,
+    raw: String,
 }
 impl TsExpression {
-    pub fn new(code: &str) -> Self {
+    pub fn new(raw: &str) -> Self {
         Self {
-            code: code.to_string(),
+            raw: raw.to_string(),
         }
     }
 
-    pub fn code(&self) -> &str {
-        &self.code
+    pub fn raw(&self) -> &str {
+        &self.raw
     }
 }
 
