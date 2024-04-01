@@ -1,42 +1,24 @@
 use std::{
-    fs::{create_dir_all, read_to_string, File},
+    fs::{create_dir_all, read_to_string, remove_dir_all, File},
     io::Write,
-    path::PathBuf,
+    path::Path,
 };
 
 use dia_core::{compiler::emit::emit_ts_module, parser::parse, traits::Compile};
-use glob::glob;
 
-const DIST_PATH: &str = "dist";
+use crate::common::FileType;
 
-fn find_dia() -> impl Iterator<Item = PathBuf> {
-    glob("src/**/*.dia").unwrap().filter_map(Result::ok)
-}
+pub fn build(output_dir: &Path) {
+    let _ = remove_dir_all(output_dir);
 
-fn find_ts() -> impl Iterator<Item = PathBuf> {
-    glob("src/**/*.ts").unwrap().filter_map(Result::ok)
-}
-
-fn transform_dia_path(path: &PathBuf) -> PathBuf {
-    let mut new_path = PathBuf::from(DIST_PATH);
-    new_path.push(path.strip_prefix("src").unwrap());
-    new_path.set_extension("ts");
-    new_path
-}
-
-fn transform_ts_path(path: &PathBuf) -> PathBuf {
-    let mut new_path = PathBuf::from(DIST_PATH);
-    new_path.push(path.strip_prefix("src").unwrap());
-    new_path
-}
-
-pub fn build() {
-    for path in find_dia() {
+    for path in FileType::Dia.walk_files() {
         let module = parse(read_to_string(&path).unwrap().as_str());
 
         let compiled = emit_ts_module(&module.to_ts_ast());
 
-        let new_path = transform_dia_path(&path);
+        let new_path = output_dir
+            .join(path)
+            .with_extension(FileType::Ts.extension());
 
         create_dir_all(new_path.parent().unwrap()).unwrap();
 
@@ -45,8 +27,8 @@ pub fn build() {
         file.write_all(compiled.as_bytes()).unwrap();
     }
 
-    for path in find_ts() {
-        let new_path = transform_ts_path(&path);
+    for path in FileType::Ts.walk_files() {
+        let new_path = output_dir.join(&path);
 
         create_dir_all(new_path.parent().unwrap()).unwrap();
 
