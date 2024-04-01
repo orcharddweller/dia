@@ -1,3 +1,8 @@
 [workspace]
-members = ["cli", "lib/core"]
+members = ["cli", "lib/core", "tests"]
 resolver = "2"
+
+[workspace.package]
+license = "MIT"
+edition = "2021"
+repository = "https://github.com/orcharddweller/dia"
